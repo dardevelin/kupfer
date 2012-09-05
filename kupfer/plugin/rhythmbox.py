@@ -78,6 +78,19 @@ class Pause (RunnableLeaf):
 	def get_icon_name(self):
 		return "media-playback-pause"
 
+class ShuffleOnce (RunnableLeaf):
+	def __init__(self):
+		RunnableLeaf.__init__(self, name=_("Shuffle Once"))
+	def run(self):
+		utils.spawn_async(("rhythmbox-client", "--no-start", "--toggle-shuffle"))
+		utils.spawn_async(("rhythmbox-client", "--no-start", "--Next"))
+		utils.spawn_async(("rhythmbox-client", "--no-start", "--toggle-shuffle"))
+	def get_description(self):
+		return _("Shuffle to Next track and return to normal playback")
+	def get_icon_name(self):
+		return "media-playlist-shuffle"
+
+
 class Next (RunnableLeaf):
 	def __init__(self):
 		RunnableLeaf.__init__(self, name=_("Next"))
@@ -410,6 +423,7 @@ class RhythmboxSource (AppLeafContentMixin, Source):
 		yield Pause()
 		yield Next()
 		yield Previous()
+		yield ShuffleOnce()
 		yield ClearQueue()
 		yield ShowPlaying()
 		artist_source = RhythmboxArtistsSource(artists)
